@@ -17,6 +17,7 @@
 /// not generally be used directly.
 ///
 /// - SeeAlso: https://en.cppreference.com/w/cpp/named_req/InputIterator
+@available(SwiftStdlib 5.8, *)
 public protocol UnsafeCxxInputIterator: Equatable {
   associatedtype Pointee
 
@@ -33,10 +34,13 @@ public protocol UnsafeCxxInputIterator: Equatable {
   func successor() -> Self
 }
 
+@available(SwiftStdlib 5.8, *)
 extension UnsafePointer: UnsafeCxxInputIterator {}
 
+@available(SwiftStdlib 5.8, *)
 extension UnsafeMutablePointer: UnsafeCxxInputIterator {}
 
+@available(SwiftStdlib 5.8, *)
 extension Optional: UnsafeCxxInputIterator where Wrapped: UnsafeCxxInputIterator {
   public typealias Pointee = Wrapped.Pointee
 
@@ -63,6 +67,7 @@ extension Optional: UnsafeCxxInputIterator where Wrapped: UnsafeCxxInputIterator
 /// This requires the C++ sequence type to define const methods `begin()` and
 /// `end()` which return input iterators into the C++ sequence. The iterator
 /// types must conform to `UnsafeCxxInputIterator`.
+@available(SwiftStdlib 5.8, *)
 public protocol CxxSequence: Sequence {
   associatedtype RawIterator: UnsafeCxxInputIterator
   override associatedtype Element = RawIterator.Pointee
@@ -80,6 +85,7 @@ public protocol CxxSequence: Sequence {
   mutating func __endUnsafe() -> RawIterator
 }
 
+@available(SwiftStdlib 5.8, *)
 public class CxxIterator<T>: IteratorProtocol where T: CxxSequence {
   // Declared as a class instead of a struct to avoid copies of this object,
   // which would result in dangling pointers for some C++ sequence types.
