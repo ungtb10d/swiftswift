@@ -1,4 +1,4 @@
-add_swift_target_library(swiftCxx ${SWIFT_STDLIB_LIBRARY_BUILD_TYPES} IS_SDK_OVERLAY
+add_swift_target_library(swiftCxx STATIC NO_LINK_NAME IS_STDLIB
     CxxSequence.swift
 
     SWIFT_COMPILE_FLAGS ${SWIFT_RUNTIME_SWIFT_COMPILE_FLAGS} ${SWIFT_STANDARD_LIBRARY_SWIFT_FLAGS}
@@ -8,7 +8,8 @@ add_swift_target_library(swiftCxx ${SWIFT_STDLIB_LIBRARY_BUILD_TYPES} IS_SDK_OVE
     -Xcc -nostdinc++
 
     LINK_FLAGS "${SWIFT_RUNTIME_SWIFT_LINK_FLAGS}"
-    INSTALL_IN_COMPONENT sdk-overlay)
+    INSTALL_IN_COMPONENT sdk-overlay
+    INSTALL_WITH_SHARED)
 
 add_subdirectory(std)
 add_subdirectory(cxxshim)

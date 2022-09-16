@@ -95,6 +95,7 @@ public class CxxIterator<T>: IteratorProtocol where T: CxxSequence {
     self.endIterator = self.sequence.__endUnsafe()
   }
 
+  @_nonoverride // workaround for https://github.com/apple/swift/issues/52881
   public func next() -> Element? {
     if self.rawIterator == self.endIterator {
       return nil
