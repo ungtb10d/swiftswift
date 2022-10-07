@@ -234,6 +234,8 @@ bool CompilerInstance::setUpASTContextIfNeeded() {
   if (!Invocation.getFrontendOptions().ModuleAliasMap.empty())
     Context->setModuleAliases(Invocation.getFrontendOptions().ModuleAliasMap);
 
+  if (!Invocation.getFrontendOptions().PackageModules.empty())
+    Context->setPackageModules(Invocation.getFrontendOptions().PackageModules);
   registerParseRequestFunctions(Context->evaluator);
   registerTypeCheckerRequestFunctions(Context->evaluator);
   registerClangImporterRequestFunctions(Context->evaluator);

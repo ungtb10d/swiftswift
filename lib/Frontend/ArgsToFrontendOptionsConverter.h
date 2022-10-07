@@ -45,6 +45,7 @@ private:
                                         bool isTestable);
   void computeImportObjCHeaderOptions();
   void computeLLVMArgs();
+  void computePackageModules();
   void computePlaygroundOptions();
   void computePrintStatsOptions();
   void computeTBDOptions();

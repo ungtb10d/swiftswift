@@ -3115,6 +3115,12 @@ bool ValueDecl::isDynamic() const {
     getAttrs().hasAttribute<DynamicAttr>());
 }
 
+bool ValueDecl::isPackage() const {
+    return evaluateOrDefault(getASTContext().evaluator,
+                             IsPackageRequest{const_cast<ValueDecl *>(this)},
+                             getAttrs().hasAttribute<PackageAccessControlAttr>());
+}
+
 bool ValueDecl::isObjCDynamicInGenericClass() const {
   if (!isObjCDynamic())
     return false;
@@ -3684,10 +3690,10 @@ static bool checkAccessUsingAccessScopes(const DeclContext *useDC,
   if (accessScope.getDeclContext() == useDC) return true;
   if (!AccessScope(useDC).isChildOf(accessScope)) return false;
 
-  // Check SPI access
-  if (!useDC || !VD->isSPI()) return true;
+  // Check SPI and Package access 
+  if (!useDC || (!VD->isSPI() && !VD->isPackage())) return true;
   auto useSF = dyn_cast<SourceFile>(useDC->getModuleScopeContext());
-  return !useSF || useSF->isImportedAsSPI(VD) ||
+  return !useSF || useSF->isImportedAsSPI(VD) || useSF->isImportedAsPackage(VD) ||
          VD->getDeclContext()->getParentModule() == useDC->getParentModule();
 }
 

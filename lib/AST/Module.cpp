@@ -2553,6 +2553,17 @@ void SourceFile::lookupImportedSPIGroups(
   }
 }
 
+bool SourceFile::isImportedAsPackage(const ValueDecl *targetDecl) const {
+  auto targetModule = targetDecl->getModuleContext();
+    for (auto &import : *Imports) {
+      if (import.options.contains(ImportFlags::PackageAccessControl) &&
+          targetModule == import.module.importedModule) {
+          return true;
+      }
+    }
+    return false;
+}
+
 bool SourceFile::isImportedAsSPI(const ValueDecl *targetDecl) const {
   auto targetModule = targetDecl->getModuleContext();
   llvm::SmallSetVector<Identifier, 4> importedSPIGroups;
@@ -2570,6 +2581,18 @@ bool SourceFile::isImportedAsSPI(const ValueDecl *targetDecl) const {
     if (importedSPIGroups.count(declSPI))
       return true;
 
+  return false;
+}
+
+bool ModuleDecl::isImportedAsPackage(const ValueDecl *targetDecl) const {
+//  FIXME
+//  auto targetModule = targetDecl->getModuleContext();
+//  for (auto &import : *Imports) {
+//    if (import.options.contains(ImportFlags::PackageAccessControl) &&
+//        targetModule == import.module.importedModule) {
+//        return true;
+//    }
+//  }
   return false;
 }
 

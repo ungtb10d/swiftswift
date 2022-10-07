@@ -328,6 +328,24 @@ void IsMoveOnlyRequest::cacheResult(bool value) const {
                              MoveOnlyAttr(/*Implicit=*/true));
 }
 
+Optional<bool> IsPackageRequest::getCachedResult() const {
+  auto decl = std::get<0>(getStorage());
+  if (decl->LazySemanticInfo.isPackageComputed)
+    return decl->LazySemanticInfo.isPackage;
+
+  return None;
+}
+
+void IsPackageRequest::cacheResult(bool value) const {
+  auto decl = std::get<0>(getStorage());
+    decl->LazySemanticInfo.isPackageComputed = true;
+    decl->LazySemanticInfo.isPackage = value;
+
+  // Add an attribute for printing
+  if (value && !decl->getAttrs().hasAttribute<PackageAccessControlAttr>())
+    decl->getAttrs().add(new (decl->getASTContext()) PackageAccessControlAttr(/*Implicit=*/true));
+}
+
 //----------------------------------------------------------------------------//
 // isDynamic computation.
 //----------------------------------------------------------------------------//

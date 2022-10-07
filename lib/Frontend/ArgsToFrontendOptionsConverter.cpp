@@ -259,6 +259,7 @@ bool ArgsToFrontendOptionsConverter::convert(
   // return early.
   if (!computeModuleAliases())
     return true;
+  computePackageModules();
 
   if (const Arg *A = Args.getLastArg(OPT_access_notes_path))
     Opts.AccessNotesPath = A->getValue();
@@ -714,6 +715,14 @@ void ArgsToFrontendOptionsConverter::computeLLVMArgs() {
   for (const Arg *A : Args.filtered(OPT_Xllvm)) {
     Opts.LLVMArgs.push_back(A->getValue());
   }
+}
+
+void ArgsToFrontendOptionsConverter::computePackageModules() {
+    auto list = Args.getAllArgValues(options::OPT_package_modules);
+    Opts.PackageModules.clear();
+    for (auto el: list) {
+        Opts.PackageModules.push_back(el);
+    }
 }
 
 bool ModuleAliasesConverter::computeModuleAliases(std::vector<std::string> args,

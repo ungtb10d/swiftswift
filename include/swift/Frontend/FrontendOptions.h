@@ -63,6 +63,9 @@ public:
   /// The name of the library to link against when using this module.
   std::string ModuleLinkName;
 
+    /// A list of in-package modules to import
+  std::vector<std::string> PackageModules;
+
   /// Arguments which should be passed in immediate mode.
   std::vector<std::string> ImmediateArgv;
 

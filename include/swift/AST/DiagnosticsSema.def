@@ -6394,6 +6394,8 @@ ERROR(concurrency_task_to_thread_model_global_actor_annotation,none,
 
 ERROR(moveOnly_not_allowed_here,none,
       "'moveOnly' may only be applied to classes, structs, and enums", ())
+ERROR(package_not_allowed_here,none,
+      "'package' may only be applied to classes, structs, enums, funcs, vars, accessors, and imports", ())
 
 #define UNDEFINE_DIAGNOSTIC_MACROS
 #include "DefineDiagnosticMacros.h"

@@ -219,6 +219,14 @@ public:
 
   void visitFinalAttr(FinalAttr *attr);
   void visitMoveOnlyAttr(MoveOnlyAttr *attr);
+    void visitPackageAccessControlAttr(PackageAccessControlAttr *attr) {
+        if (isa<NominalTypeDecl>(D) || isa<ValueDecl>(D) || isa<VarDecl>(D) ||
+            isa<FuncDecl>(D) || isa<ImportDecl>(D))
+          return;
+
+        diagnose(attr->getLocation(), diag::package_not_allowed_here)
+          .fixItRemove(attr->getRange());
+    }
   void visitCompileTimeConstAttr(CompileTimeConstAttr *attr) {}
   void visitIBActionAttr(IBActionAttr *attr);
   void visitIBSegueActionAttr(IBSegueActionAttr *attr);
