@@ -535,7 +535,7 @@ UnboundImport::UnboundImport(ImportDecl *ID)
 
   if (ID->getAttrs().hasAttribute<ImplementationOnlyAttr>())
     import.options |= ImportFlags::ImplementationOnly;
-
+  // E.g. @package import Foo
   if (ID->getAttrs().hasAttribute<PackageAccessControlAttr>())
       import.options |= ImportFlags::PackageAccessControl;
 
@@ -557,6 +557,14 @@ UnboundImport::UnboundImport(ImportDecl *ID)
     import.options |= ImportFlags::Preconcurrency;
     import.preconcurrencyRange = attr->getRangeWithAt();
   }
+    // E.g. `-package-modules Foo` was passed
+    auto pkgModules = ID->getASTContext().getPackageModules();
+    for (auto pkgModule: pkgModules) {
+      if (pkgModule == ID->getAccessPath().front().Item.str()) {
+          import.options |= ImportFlags::PackageAccessControl;
+          break;
+      }
+    }
 }
 
 bool UnboundImport::checkNotTautological(const SourceFile &SF) {
