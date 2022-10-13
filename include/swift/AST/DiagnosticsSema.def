@@ -150,18 +150,18 @@ FIXIT(insert_type_qualification,"%0.",(Type))
 
 ERROR(candidate_inaccessible,none,
       "%0 is inaccessible due to "
-      "'%select{private|fileprivate|internal|@_spi|@_spi}1' protection level",
-      (DeclBaseName, AccessLevel))
+      "%select{'private'|'fileprivate'|'internal'||}1%select{%select{|'@package'}3|'@_spi'}2 protection level",
+      (DeclBaseName, AccessLevel, bool, bool))
 
 NOTE(note_candidate_inaccessible,none,
      "%0 is inaccessible due to "
-     "'%select{private|fileprivate|internal|@_spi|@_spi}1' protection level",
-     (DeclName, AccessLevel))
+     "%select{'private'|'fileprivate'|'internal'||}1%select{%select{|'@package'}3|'@_spi'}2 protection level",
+     (DeclName, AccessLevel, bool, bool))
 
 ERROR(init_candidate_inaccessible,none,
       "%0 initializer is inaccessible due to "
-      "'%select{private|fileprivate|internal|@_spi|@_spi}1' protection level",
-      (Type, AccessLevel))
+      "%select{'private'|'fileprivate'|'internal'||}1%select{%select{|'@package'}3|'@_spi'}2 protection level",
+      (Type, AccessLevel, bool, bool))
 
 ERROR(cannot_pass_rvalue_mutating_subelement,none,
       "cannot use mutating member on immutable value: %0",
@@ -1863,6 +1863,14 @@ WARNING(function_type_usable_from_inline_warn,none,
         "should be '@usableFromInline' or public",
         (unsigned, bool, bool))
 
+ERROR(package_attribute_on_non_public,none,
+      "%select{private|fileprivate|internal|%error|%error}0 %1 "
+      "cannot be declared '@package' because only public and open "
+      "declarations can be '@package'",
+      (AccessLevel, DescriptiveDeclKind))
+ERROR(package_attribute_on_frozen_stored_properties,none,
+      "stored property %0 cannot be declared '@package' in a '@frozen' struct",
+      (DeclName))
 ERROR(spi_attribute_on_non_public,none,
       "%select{private|fileprivate|internal|%error|%error}0 %1 "
       "cannot be declared '@_spi' because only public and open "
@@ -2897,6 +2905,8 @@ ERROR(decl_from_hidden_module,none,
       "%select{%3 has been imported as implementation-only|"
       "it is an SPI imported from %3|"
       "it is SPI|"
+      "it is a package type imported from %3|"
+      "it is a package decl|"
       "%3 was not imported by this file}4",
       (DescriptiveDeclKind, DeclName, unsigned, Identifier, unsigned))
 WARNING(decl_from_hidden_module_warn,none,
@@ -5787,6 +5797,8 @@ ERROR(inlinable_decl_ref_from_hidden_module,
       "because %select{%3 was imported implementation-only|"
       "it is an SPI imported from %3|"
       "it is SPI|"
+      "it is a package type imported from %3|"
+      "it is a package decl|"
       "%3 was not imported by this file}4",
       (DescriptiveDeclKind, DeclName, unsigned, Identifier, unsigned))
 

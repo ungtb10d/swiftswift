@@ -1583,8 +1583,12 @@ swift::getDisallowedOriginKind(const Decl *decl,
     return where.getDeclContext()->getParentModule() == M ?
       DisallowedOriginKind::SPILocal :
       DisallowedOriginKind::SPIImported;
+  } else if (isa<ValueDecl>(decl) && cast<ValueDecl>(decl)->isPackage() && !where.isPackage()) {
+      // package can only be exported in package.
+      return where.getDeclContext()->getParentModule() == M ?
+        DisallowedOriginKind::PackageLocal :
+        DisallowedOriginKind::PackageImported;
   }
-
   return DisallowedOriginKind::None;
 }
 

@@ -537,7 +537,7 @@ Expr *TypeChecker::resolveDeclRefExpr(UnresolvedDeclRefExpr *UDRE,
       const ValueDecl *first = inaccessibleResults.front().getValueDecl();
       Context.Diags.diagnose(
           Loc, diag::candidate_inaccessible, first->getBaseName(),
-          first->getFormalAccessScope().accessLevelForDiagnostics());
+          first->getFormalAccessScope().accessLevelForDiagnostics(), first->isSPI(), first->isPackage());
 
       // FIXME: If any of the candidates (usually just one) are in the same
       // module we could offer a fix-it.

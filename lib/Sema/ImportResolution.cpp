@@ -560,7 +560,7 @@ UnboundImport::UnboundImport(ImportDecl *ID)
     // E.g. `-package-modules Foo` was passed
     auto pkgModules = ID->getASTContext().getPackageModules();
     for (auto pkgModule: pkgModules) {
-      if (pkgModule == ID->getAccessPath().front().Item.str()) {
+      if (pkgModule == ID->getImportPath().front().Item.str()) {
           import.options |= ImportFlags::PackageAccessControl;
           break;
       }

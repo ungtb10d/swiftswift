@@ -219,14 +219,7 @@ public:
 
   void visitFinalAttr(FinalAttr *attr);
   void visitMoveOnlyAttr(MoveOnlyAttr *attr);
-    void visitPackageAccessControlAttr(PackageAccessControlAttr *attr) {
-        if (isa<NominalTypeDecl>(D) || isa<ValueDecl>(D) || isa<VarDecl>(D) ||
-            isa<FuncDecl>(D) || isa<ImportDecl>(D))
-          return;
-
-        diagnose(attr->getLocation(), diag::package_not_allowed_here)
-          .fixItRemove(attr->getRange());
-    }
+    void visitPackageAccessControlAttr(PackageAccessControlAttr *attr);
   void visitCompileTimeConstAttr(CompileTimeConstAttr *attr) {}
   void visitIBActionAttr(IBActionAttr *attr);
   void visitIBSegueActionAttr(IBSegueActionAttr *attr);
@@ -1095,6 +1088,38 @@ void AttributeChecker::visitSetterAccessAttr(
       .fixItRemove(attr->getRange());
     return;
   }
+}
+void AttributeChecker::visitPackageAccessControlAttr(PackageAccessControlAttr *attr) {
+
+  if (auto VD = dyn_cast<ValueDecl>(D)) {
+      // VD must be public or open to use an @_spi attribute.
+      auto declAccess = VD->getFormalAccess();
+      if (declAccess < AccessLevel::Public &&
+          !VD->getAttrs().hasAttribute<UsableFromInlineAttr>() &&
+          !VD->isPackage()) {
+        diagnoseAndRemoveAttr(attr,
+                              diag::package_attribute_on_non_public,
+                              declAccess,
+                              D->getDescriptiveKind());
+      }
+
+      // Forbid stored properties marked SPI in frozen types.
+      if (auto property = dyn_cast<VarDecl>(VD)) {
+        if (auto NTD = dyn_cast<NominalTypeDecl>(D->getDeclContext())) {
+          if (property->isLayoutExposedToClients() && !NTD->isPackage()) {
+            diagnoseAndRemoveAttr(attr,
+                                  diag::package_attribute_on_frozen_stored_properties,
+                                  VD->getName());
+          }
+        }
+      }
+    }
+
+    if (isa<NominalTypeDecl>(D) || isa<FuncDecl>(D) || isa<ImportDecl>(D))
+      return;
+
+    diagnose(attr->getLocation(), diag::package_not_allowed_here)
+        .fixItRemove(attr->getRange());
 }
 
 void AttributeChecker::visitSPIAccessControlAttr(SPIAccessControlAttr *attr) {

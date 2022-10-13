@@ -1196,7 +1196,7 @@ static Type diagnoseUnknownType(TypeResolution resolution,
       // FIXME: What if the unviable candidates have different levels of access?
       auto first = cast<TypeDecl>(inaccessibleResults.front().getValueDecl());
       diags.diagnose(comp->getNameLoc(), diag::candidate_inaccessible,
-                     first->getBaseName(), first->getFormalAccess());
+                     first->getBaseName(), first->getFormalAccess(), first->isSPI(), first->isPackage());
 
       // FIXME: If any of the candidates (usually just one) are in the same
       // module we could offer a fix-it.
@@ -1272,7 +1272,7 @@ static Type diagnoseUnknownType(TypeResolution resolution,
     // FIXME: What if the unviable candidates have different levels of access?
     const TypeDecl *first = inaccessibleMembers.front().Member;
     diags.diagnose(comp->getNameLoc(), diag::candidate_inaccessible,
-                   first->getBaseName(), first->getFormalAccess());
+                   first->getBaseName(), first->getFormalAccess(), first->isSPI(), first->isPackage());
 
     // FIXME: If any of the candidates (usually just one) are in the same module
     // we could offer a fix-it.

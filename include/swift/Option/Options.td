@@ -266,10 +266,6 @@ def import_objc_header : Separate<["-"], "import-objc-header">,
   Flags<[FrontendOption, HelpHidden, ArgumentIsPath]>,
   HelpText<"Implicitly imports an Objective-C header file">;
 
-def package_modules : Flag<["-"], "package-modules">,
-  HelpText<"A list of in-package modules to import">,
-  Flags<[FrontendOption, NoInteractiveOption, DoesNotAffectIncrementalBuild]>;
-
 def pch_output_dir: Separate<["-"], "pch-output-dir">,
   Flags<[FrontendOption, HelpHidden, ArgumentIsPath]>,
   HelpText<"Directory to persist automatically created precompiled bridging headers">;
@@ -991,6 +987,11 @@ def migrator_update_sdk: Flag<["-"], "migrator-update-sdk">,
 def migrator_update_swift: Flag<["-"], "migrator-update-swift">,
   Flags<[FrontendOption, NoInteractiveOption]>,
   HelpText<"Does nothing. Temporary compatibility flag for Xcode.">;
+
+def package_modules: Separate<["-"], "package-modules">,
+  Flags<[FrontendOption]>,
+  HelpText<"A list of in-package modules to import">,
+  MetaVarName<"<module_name>">;
 
 // File types
 

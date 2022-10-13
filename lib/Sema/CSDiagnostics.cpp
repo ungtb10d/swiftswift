@@ -5559,13 +5559,14 @@ bool InaccessibleMemberFailure::diagnoseAsError() {
 
   auto loc = nameLoc.isValid() ? nameLoc.getStartLoc() : ::getLoc(anchor);
   auto accessLevel = Member->getFormalAccessScope().accessLevelForDiagnostics();
+
   if (auto *CD = dyn_cast<ConstructorDecl>(Member)) {
     emitDiagnosticAt(loc, diag::init_candidate_inaccessible,
-                     CD->getResultInterfaceType(), accessLevel)
+                     CD->getResultInterfaceType(), accessLevel, Member->isSPI(), Member->isPackage())
         .highlight(nameLoc.getSourceRange());
   } else {
     emitDiagnosticAt(loc, diag::candidate_inaccessible, Member->getBaseName(),
-                     accessLevel)
+                     accessLevel, Member->isSPI(), Member->isPackage())
         .highlight(nameLoc.getSourceRange());
   }
 

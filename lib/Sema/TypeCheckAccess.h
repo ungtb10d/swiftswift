@@ -38,10 +38,12 @@ void checkAccessControl(Decl *D);
 // diag::inlinable_decl_ref_from_hidden_module,
 // diag::decl_from_hidden_module and
 // diag::conformance_from_implementation_only_module.
-enum class DisallowedOriginKind : uint8_t {
+enum class DisallowedOriginKind : uint16_t {
   ImplementationOnly,
   SPIImported,
   SPILocal,
+  PackageImported,
+  PackageLocal,
   ImplicitlyImported,
   None
 };

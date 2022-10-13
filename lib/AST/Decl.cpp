@@ -3488,7 +3488,8 @@ static AccessLevel getMaximallyOpenAccessFor(const ValueDecl *decl) {
 }
 
 /// Adjust \p access based on whether \p VD is \@usableFromInline, has been
-/// testably imported from \p useDC or \p VD is an imported SPI.
+/// testably imported from \p useDC, \p VD is an imported SPI, or \p VD is an
+/// imported package decl.
 ///
 /// \p access isn't always just `VD->getFormalAccess()` because this adjustment
 /// may be for a write, in which case the setter's access might be used instead.
@@ -3691,10 +3692,16 @@ static bool checkAccessUsingAccessScopes(const DeclContext *useDC,
   if (!AccessScope(useDC).isChildOf(accessScope)) return false;
 
   // Check SPI and Package access 
-  if (!useDC || (!VD->isSPI() && !VD->isPackage())) return true;
+  if (!useDC) return true;
   auto useSF = dyn_cast<SourceFile>(useDC->getModuleScopeContext());
-  return !useSF || useSF->isImportedAsSPI(VD) || useSF->isImportedAsPackage(VD) ||
-         VD->getDeclContext()->getParentModule() == useDC->getParentModule();
+  auto parentModuleMatched = VD->getDeclContext()->getParentModule() == useDC->getParentModule();
+  if (VD->isSPI()) {
+      return !useSF || useSF->isImportedAsSPI(VD) || parentModuleMatched;
+  }
+  if (VD->isPackage()) {
+      return !useSF || useSF->isImportedAsPackage(VD) || parentModuleMatched;
+  }
+  return true;
 }
 
 /// Checks if \p VD may be used from \p useDC, taking \@testable and \@_spi
