@@ -5,7 +5,7 @@
 // RUN: %target-swift-frontend -module-name Bar %t/Bar.swift -emit-module -emit-module-path %t/Bar.swiftmodule
 // RUN: test -f %t/Bar.swiftmodule
 
-// Calling a package decl should fail without @package import
+// Accessing a package decl should fail without @package import
 // RUN: not %target-swift-frontend -typecheck %t/Foo1.swift -I %t 2> %t/Foo1.output
 // RUN: %FileCheck %s -input-file %t/Foo1.output -check-prefix CHECK-ERROR
 // CHECK-ERROR: error: cannot find 'world' in scope
@@ -28,6 +28,7 @@
 import Bar
 public func show() {
     hello()
+    // pass if -package-modules is passed, else
     world()
 }
 
