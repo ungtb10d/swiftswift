@@ -557,14 +557,14 @@ UnboundImport::UnboundImport(ImportDecl *ID)
     import.options |= ImportFlags::Preconcurrency;
     import.preconcurrencyRange = attr->getRangeWithAt();
   }
-    // E.g. `-package-modules Foo` was passed
-    auto pkgModules = ID->getASTContext().getPackageModules();
-    for (auto pkgModule: pkgModules) {
-      if (pkgModule == ID->getImportPath().front().Item.str()) {
-          import.options |= ImportFlags::PackageAccessControl;
-          break;
-      }
+  // Handle if `-package-modules <module_name>` was passed
+  auto pkgModules = ID->getASTContext().getPackageModules();
+  for (auto pkgModule: pkgModules) {
+    if (pkgModule == ID->getImportPath().front().Item.str()) {
+      import.options |= ImportFlags::PackageAccessControl;
+      break;
     }
+  }
 }
 
 bool UnboundImport::checkNotTautological(const SourceFile &SF) {

@@ -3691,13 +3691,14 @@ static bool checkAccessUsingAccessScopes(const DeclContext *useDC,
   if (accessScope.getDeclContext() == useDC) return true;
   if (!AccessScope(useDC).isChildOf(accessScope)) return false;
 
-  // Check SPI and Package access 
   if (!useDC) return true;
   auto useSF = dyn_cast<SourceFile>(useDC->getModuleScopeContext());
   auto parentModuleMatched = VD->getDeclContext()->getParentModule() == useDC->getParentModule();
+  // Check SPI access
   if (VD->isSPI()) {
       return !useSF || useSF->isImportedAsSPI(VD) || parentModuleMatched;
   }
+  // Check @package access
   if (VD->isPackage()) {
       return !useSF || useSF->isImportedAsPackage(VD) || parentModuleMatched;
   }

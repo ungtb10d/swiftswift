@@ -2269,8 +2269,10 @@ class ValueDecl : public Decl {
     /// Whether this declaration can not be copied and thus is move only.
     unsigned isMoveOnly : 1;
 
-      unsigned isPackageComputed : 1;
-      unsigned isPackage : 1;
+    /// Whether the 'isPackage' bit has been computed
+    unsigned isPackageComputed : 1;
+    /// Whether this declaration has a @package attribute
+    unsigned isPackage : 1;
 
   } LazySemanticInfo = { };
 
@@ -2279,7 +2281,7 @@ class ValueDecl : public Decl {
   friend class IsObjCRequest;
   friend class IsFinalRequest;
   friend class IsMoveOnlyRequest;
-    friend class IsPackageRequest;
+  friend class IsPackageRequest;
   friend class IsDynamicRequest;
   friend class IsImplicitlyUnwrappedOptionalRequest;
   friend class InterfaceTypeRequest;
@@ -2560,7 +2562,8 @@ public:
   /// Is this declaration marked with 'dynamic'?
   bool isDynamic() const;
 
-    bool isPackage() const;
+  /// Is this declaration marked with '@package'?
+  bool isPackage() const;
 
 private:
   bool isObjCDynamic() const {

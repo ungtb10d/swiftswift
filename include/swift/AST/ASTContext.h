@@ -373,8 +373,8 @@ private:
   /// The boolean in the value indicates whether or not the entry is keyed by an alias vs real name,
   /// i.e. true if the entry is [key: alias_name, value: (real_name, true)].
   mutable llvm::DenseMap<Identifier, std::pair<Identifier, bool>> ModuleAliasMap;
-    /// Cache in-package modules to import
-    mutable std::vector<std::string> PackageModules;
+  /// Cache in-package modules to import
+  mutable std::vector<std::string> PackageModules;
 
   /// Retrieve the allocator for the given arena.
   llvm::BumpPtrAllocator &
@@ -978,14 +978,14 @@ public:
   /// Add a module interface checker to use for this AST context.
   void addModuleInterfaceChecker(std::unique_ptr<ModuleInterfaceChecker> checker);
 
-    void setPackageModules(std::vector<std::string> &packageModules) {
-        PackageModules.clear();
-        for (auto el: packageModules) {
-            PackageModules.push_back(el);
-        }
+  void setPackageModules(std::vector<std::string> &packageModules) {
+    PackageModules.clear();
+    for (auto el: packageModules) {
+      PackageModules.push_back(el);
     }
-
-    std::vector<std::string> getPackageModules() const { return PackageModules; }
+  }
+  
+  std::vector<std::string> getPackageModules() const { return PackageModules; }
 
   /// Retrieve the module interface checker associated with this AST context.
   ModuleInterfaceChecker *getModuleInterfaceChecker() const;

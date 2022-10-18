@@ -84,9 +84,10 @@ enum class ImportFlags {
   /// concurrency.
   Preconcurrency = 0x20,
 
-    PackageAccessControl = 0x40,
+  /// The module is imported to have access to decls with @package attributes
+  PackageAccessControl = 0x40,
 
-    /// Used for DenseMap.
+  /// Used for DenseMap.
   Reserved = 0x80
 };
 
