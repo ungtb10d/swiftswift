@@ -1155,10 +1155,10 @@ ImportDecl *ImportDecl::create(ASTContext &Ctx, DeclContext *DC,
   auto D = new (ptr) ImportDecl(DC, ImportLoc, Kind, KindLoc, Path);
   if (ClangN)
     D->setClangNode(ClangN);
-  auto realNameIfExists = Ctx.getRealModuleName(Path.front().Item,
-                                                ASTContext::ModuleAliasLookupOption::realNameFromAlias);
-  if (!realNameIfExists.empty()) {
-    D->RealModuleName = realNameIfExists;
+  auto binaryNameIfExists = Ctx.getBinaryModuleName(Path.front().Item,
+                                                ASTContext::ModuleAliasLookupOption::binaryNameFromSyntaxName);
+  if (!binaryNameIfExists.empty()) {
+    D->RealModuleName = binaryNameIfExists;
   }
   return D;
 }
@@ -1264,7 +1264,7 @@ ImportPath ImportDecl::getRealImportPath(ImportPath::Builder &scratch) const {
 
   for (auto elem : path) {
     if (scratch.empty()) {
-      // Add the real module name instead of its alias
+      // Add the binary module name instead of its syntax name
       scratch.push_back(RealModuleName);
     } else {
       // Add the rest if any (access path elements)
